@@ -1,0 +1,5 @@
+*.cpp
+*.exe
+*.txt
+/node_modules
+/client
