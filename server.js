@@ -16,12 +16,9 @@ app.get("*", (req, res) => {
 app.post("/", (req, res) => {
   var code = req.body.code;
   var ip = req.body.ip;
-  fs.writeFile("./a.cpp", code, (err) => {
-    // console.log(err);
-  });
+  fs.writeFile("./a.cpp", code, (err) => {});
   fs.writeFile("./a.txt", ip, (err) => {});
   exec("g++ a.cpp -o a", (err, stdout, stderr) => {
-  
     if (err) {
       fs.writeFile("./a.cpp", "", (err) => {});
       fs.writeFile("./a.txt", "", (err) => {});
@@ -29,9 +26,6 @@ app.post("/", (req, res) => {
       return res.send({ stdout: stdout, stderr: stderr });
     }
     exec(".\\a < a.txt", (err, stdout, stderr) => {
-      // console.log(err);
-      // console.log(stdout);
-      // console.log(stderr);
       fs.writeFile("./a.cpp", "", (err) => {});
       fs.writeFile("./a.txt", "", (err) => {});
       return res.send({ stdout: stdout, stderr: stderr });
