@@ -21,9 +21,7 @@ app.post("/", (req, res) => {
   });
   fs.writeFile("./a.txt", ip, (err) => {});
   exec("g++ a.cpp -o a", (err, stdout, stderr) => {
-    // console.log(err);
-    // console.log(stdout);
-    // console.log(stderr);
+  
     if (err) {
       fs.writeFile("./a.cpp", "", (err) => {});
       fs.writeFile("./a.txt", "", (err) => {});
