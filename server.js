@@ -18,7 +18,7 @@ app.post("/", (req, res) => {
   var ip = req.body.ip;
   fs.writeFile("./a.cpp", code, (err) => {});
   fs.writeFile("./a.txt", ip, (err) => {});
-  cpp.runFile("a.cpp", { stdin: ip }).then((result) => {
+  cpp.runFile("./a.cpp", { stdin: ip }).then((result) => {
     fs.writeFile("./a.cpp", "", (err) => {});
     return res.send({ stdout: result.stdout, stderr: result.stderr });
   });
