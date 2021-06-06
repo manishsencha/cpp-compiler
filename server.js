@@ -2,7 +2,9 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const fs = require("fs");
-const { c, cpp, node, python, java } = require("compile-run");
+const request = require("request");
+require("dotenv").config();
+
 const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
@@ -16,12 +18,23 @@ app.get("*", (req, res) => {
 app.post("/", (req, res) => {
   var code = req.body.code;
   var ip = req.body.ip;
-  fs.writeFile("./a.cpp", code, (err) => {});
-  fs.writeFile("./a.txt", ip, (err) => {});
-  cpp.runFile("./a.cpp", { stdin: ip }).then((result) => {
-    fs.writeFile("./a.cpp", "", (err) => {});
-    return res.send({ stdout: result.stdout, stderr: result.stderr });
-  });
+  var program = {
+    script: code,
+    language: "cpp",
+    versionIndex: "0",
+    clientId: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+  };
+  request(
+    {
+      url: "https://api.jdoodle.com/v1/execute",
+      method: "POST",
+      json: program,
+    },
+    function (error, response, body) {
+      return res.send({ stdout: body.output });
+    }
+  );
 });
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
