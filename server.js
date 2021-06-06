@@ -22,6 +22,7 @@ app.post("/", (req, res) => {
     script: code,
     language: "cpp",
     versionIndex: "0",
+    stdin : ip,
     clientId: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
   };
