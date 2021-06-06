@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const fs = require("fs");
-const exec = require("child_process").exec;
+const { c, cpp, node, python, java } = require("compile-run");
 const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
@@ -18,18 +18,9 @@ app.post("/", (req, res) => {
   var ip = req.body.ip;
   fs.writeFile("./a.cpp", code, (err) => {});
   fs.writeFile("./a.txt", ip, (err) => {});
-  exec("g++ a.cpp -o a", (err, stdout, stderr) => {
-    if (err) {
-      fs.writeFile("./a.cpp", "", (err) => {});
-      fs.writeFile("./a.txt", "", (err) => {});
-
-      return res.send({ stdout: stdout, stderr: stderr });
-    }
-    exec(".\\a < a.txt", (err, stdout, stderr) => {
-      fs.writeFile("./a.cpp", "", (err) => {});
-      fs.writeFile("./a.txt", "", (err) => {});
-      return res.send({ stdout: stdout, stderr: stderr });
-    });
+  cpp.runFile("a.cpp", { stdin: ip }).then((result) => {
+    fs.writeFile("./a.cpp", "", (err) => {});
+    return res.send({ stdout: result.stdout, stderr: result.stderr });
   });
 });
 app.listen(PORT, () => {
