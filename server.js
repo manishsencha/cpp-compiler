@@ -19,21 +19,38 @@ app.post("/", (req, res) => {
   var code = req.body.code;
   var ip = req.body.ip;
   var program = {
-    script: code,
-    language: "cpp",
-    versionIndex: "0",
-    stdin : ip,
-    clientId: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
+    source: code,
+    compiler: "g102",
+    options: {
+      userArguments: "-std=c++20",
+      executeParameters: {
+        args: ["", ""],
+        stdin: ip,
+      },
+      compilerOptions: {
+        executorRequest: true,
+      },
+      filters: {
+        execute: true,
+      },
+      tools: [],
+      libraries: [{ id: "boost", version: "1.75.0" }],
+    },
+    lang: "c++",
+    allowStoreCodeDebug: true,
   };
   request(
     {
-      url: "https://api.jdoodle.com/v1/execute",
+      url: "https://godbolt.org/api/compiler/g102/compile",
       method: "POST",
       json: program,
     },
     function (error, response, body) {
-      return res.send({ stdout: body.output });
+      console.log("Response : " + response);
+      console.log("Stdout : " + body.stdout);
+      console.log("Stderr " + body.stderr);
+      console.log("Stdout : " + console.log(body.data));
+      return res.send({ stdout: body });
     }
   );
 });
