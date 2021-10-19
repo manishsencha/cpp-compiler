@@ -25,7 +25,7 @@ app.post("/", (req, res) => {
     console.log("Input saved successfully")
   })
   exec(
-    "apt install g++ && g++ code.cpp -o code && ./code < ip.txt",
+    "g++ code.cpp -o code && ./code < ip.txt",
     function (error, stdout, stderr) {
       if (stdout) {
         fs.unlinkSync("code", (err) => {
