@@ -8,7 +8,7 @@
     "start": "node server.js",
     "runDev": "nodemon server.js",
     "uibuild": "cd client && npm install && npm run build && cd ..",
-    "push" : "git add . && git commit -m 'UI Build' && git push"
+    "push" : "npm run uibuild && git add . && git commit -m 'UI Build' && git push"
   },
   "author": "manishsencha",
   "license": "ISC",
