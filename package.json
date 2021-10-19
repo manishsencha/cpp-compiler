@@ -5,9 +5,10 @@
   "main": "server.js",
   "scripts": {
     "test": "node server.js",
-    "start": "node server.js",
+    "start": "cd client && npm install && npm run build && cd .. && node server.js",
     "runDev": "nodemon server.js",
-    "uibuild": "cd client && npm install && npm run build && cd .."
+    "uibuild": "cd client && npm install && npm run build && cd ..",
+    "push" : "git add . && git commit -m 'UI Build' && git push"
   },
   "author": "manishsencha",
   "license": "ISC",
