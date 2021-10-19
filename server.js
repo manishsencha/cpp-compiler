@@ -1,59 +1,59 @@
-const express = require("express");
-const app = express();
-const cors = require("cors");
-const fs = require("fs");
-const request = require("request");
-require("dotenv").config();
+const express = require("express")
+const app = express()
+const path = require("path")
+const fs = require("fs")
+const exec = require("child_process").exec
+require("dotenv").config()
 
-const PORT = process.env.PORT || 3001;
-app.use(cors());
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-app.use(express.static(__dirname + "/client/build"));
+const PORT = process.env.PORT || 3000
+app.use(express.urlencoded({ extended: false }))
+app.use(express.json())
+app.use(express.static(path.join(__dirname, "client", "build")))
 
 app.get("*", (req, res) => {
-  res.send({ server: "Running" });
-});
-
+  return res.render("index.html")
+})
 app.post("/", (req, res) => {
-  var code = req.body.code;
-  var ip = req.body.ip;
-  var program = {
-    source: code,
-    compiler: "g102",
-    options: {
-      userArguments: "-std=c++20",
-      executeParameters: {
-        args: ["", ""],
-        stdin: ip,
-      },
-      compilerOptions: {
-        executorRequest: true,
-      },
-      filters: {
-        execute: true,
-      },
-      tools: [],
-      libraries: [{ id: "boost", version: "1.75.0" }],
-    },
-    lang: "c++",
-    allowStoreCodeDebug: true,
-  };
-  request(
-    {
-      url: "https://godbolt.org/api/compiler/g102/compile",
-      method: "POST",
-      json: program,
-    },
-    function (error, response, body) {
-      console.log("Response : " + response);
-      console.log("Stdout : " + body.stdout);
-      console.log("Stderr " + body.stderr);
-      console.log("Stdout : " + console.log(body.data));
-      return res.send({ stdout: body });
+  const code = req.body.code
+  const ip = req.body.ip
+  fs.writeFile("code.cpp", code, (err) => {
+    if (err) return res.send({ error: err })
+    console.log("Code Saved successfully")
+  })
+  fs.writeFile("ip.txt", ip, (err) => {
+    if (err) return res.send({ error: err })
+    console.log("Input saved successfully")
+  })
+  exec(
+    "g++ code.cpp -o code && ./code < ip.txt",
+    function (error, stdout, stderr) {
+      if (stdout) {
+        fs.unlinkSync("code", (err) => {
+          if (err) {
+            console.log(err)
+          } else {
+            console.log("File deleted")
+          }
+        })
+      }
+      fs.unlinkSync("code.cpp", (err) => {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log("File deleted")
+        }
+      })
+      fs.unlinkSync("ip.txt", (err) => {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log("File deleted")
+        }
+      })
+      return res.send({ error: error, stdout: stdout, stderr: stderr })
     }
-  );
-});
+  )
+})
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+  console.log(`Server running at http://localhost:${PORT}`)
+})
