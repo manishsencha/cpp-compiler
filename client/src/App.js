@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import Editor from "@monaco-editor/react"
 import "./App.css"
 import axios from "axios"
@@ -8,6 +8,11 @@ function App() {
   const [ip, setIp] = useState("")
   const [output, setOutput] = useState("")
   const [compiling, setCompiling] = useState(false)
+  useEffect(() =>
+    alert(
+      "Sorry for the incovenience The app is not currently fully functional on web. If you want to use the app please clone the project and use it on your system."
+    )
+  )
   const handleSubmit = async (e) => {
     e.preventDefault()
     setCompiling(true)

@@ -5,7 +5,7 @@ const fs = require("fs")
 const exec = require("child_process").exec
 require("dotenv").config()
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3001
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 app.use(express.static(path.join(__dirname, "client", "build")))
